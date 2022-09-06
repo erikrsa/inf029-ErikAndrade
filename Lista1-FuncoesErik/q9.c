@@ -19,7 +19,12 @@ typedef struct reg_cadastro
   int nascAno;
   char cpf[30];
   char sexo;
+  int validaNome;
+  int validaData;
+  int validaCPF;
+  int validaSexo;
 }cad;
+
 
 int validarNome(char nome[]);
 int ehbissexto(int ano);
@@ -31,22 +36,70 @@ cad cadastrarCliente();
 main()
 {
   cad cadast;
+  int validacao;
 
   printf("\n====== Cadastro de cliente ======\n");
 
   cadast = cadastrarCliente();
 
-  printf("\n\n====== Registro ======");
+  validacao = cliente.validaNome*cliente.validarData*cliente.validaCPF*cliente.validaSexo;
 
-  printf("\nNome: %s", cadast.nome);
+  if(validacao == 1)
+  {
+    printf("Dados registrados com sucesso!");
+    
+    printf("\n\n====== Registro ======");
 
-  printf("\nData de nascimento: %s", cadast.data);
+    printf("\nNome: %s", cadast.nome);
+  
+    printf("\nData de nascimento: %s", cadast.data);
+  
+    printf("\nCPF: %s", cadast.cpf);
+  
+    printf("\nSexo: %c\n", cadast.sexo);
+  }
 
-  printf("\nCPF: %s", cadast.cpf);
-
-  printf("\nSexo: %c\n", cadast.sexo);
 }
 
+cad cadastrarCliente()
+{
+  cad cliente;
+  int j, barra;
+  
+  printf("Nome (no máximo 20 caracteres): ");
+  fgets(cliente.nome, 256, stdin);
+  for(j=0; cliente.nome[j]!='\n'; j++);
+  cliente.nome[j]='\0';
+  // getchar();
+
+  cliente.validaNome = validarNome(cliente.nome);
+
+  printf("Data de nascimento\n");
+  printf("Dia: ");
+  scanf("%d", &cliente.nascDia);
+  printf("Mes: ");
+  scanf("%d", &cliente.nascMes);
+  printf("Ano (formato aaaa): ");
+  scanf("%d", &cliente.nascAno);
+
+  cliente.validarData = validarNascimento(cliente.nascDia, cliente.nascMes, cliente. nascAno);
+
+  printf("CPF (somente numeros): ");
+  fgets(cliente.cpf, 30, stdin);
+  for(j=0; cliente.cpf[j]!='\n'; j++);
+  cliente.cpf[j]='\0'; 
+  getchar();
+
+  cliente.validaCPF = validarCPF(cliente.cpf);
+
+  printf("Sexo (m: masculino, f: feminino, o: outro): ");
+  scanf("%c", &cliente.sexo);
+  getchar();
+
+  cliente.validaSexo = validarSexo(cliente.sexo);
+
+  return cliente;
+}
 
 int validarNome(char nome[])
 {
@@ -111,7 +164,6 @@ int validarNascimento(int dia, int mes, int ano)
 }
 
 
-
 int validarCPF(char cpf[])
 {
   for(int i=0; cpf[i]!='\0'; i++)
@@ -153,24 +205,6 @@ cad cadastrarCliente()
   scanf("%d", &cliente.nascMes);
   printf("Ano (formato aaaa): ");
   scanf("%d", &cliente.nascAno);
-  
-  // printf("Data de nascimento: ");
-  // fgets(cliente.data, 12, stdin);
-  // for(j=0; cliente.data[j]!='\n'; j++);
-  // cliente.data[j]='\0';
-  // getchar();
-  // for(j=0, barra=0, cliente.nascDia=0, cliente.nascMes=0, cliente.nascAno=0, multdia=10, multmes=10, multano=1000; cliente.data[j]!='\0'; j++)
-  // {
-  //   if(cliente.data[j]=='/')
-  //     barra++;
-  //   if(barra==0)
-  //     cliente.nascDia+=(cliente.data[j]-'0');
-  //   else if(barra==1)
-  //     cliente.nascMes+=cliente.data[j]-'0';
-  //   else
-  //     cliente.nascAno+=cliente.data[j]-'0';
-  // }
-  //getchar();
 
   printf("CPF (somente numeros): ");
   fgets(cliente.cpf, 30, stdin);
@@ -183,23 +217,4 @@ cad cadastrarCliente()
   getchar();
 
   return cliente;
-}
-
-main()
-{
-  cad cadast;
-
-  printf("\n====== Cadastro de cliente ======\n");
-
-  cadast = cadastrarCliente();
-
-  printf("\n\n====== Registro ======");
-
-  printf("\nNome: %s", cadast.nome);
-
-  printf("\nData de nascimento: %s", cadast.data);
-
-  printf("\nCPF: %s", cadast.cpf);
-
-  printf("\nSexo: %c\n", cadast.sexo);
 }
