@@ -12,6 +12,7 @@ typedef struct cadastro_aluno
   int validaData;
   int validaCPF;
   int validaSexo;
+  char tipo; //'a' para aluno; 'p' para professor
 }alu;
 
-int mainAluno(alu aluno[], int qtdAluno);
+int mainPessoal(pess pessoal[], int qtdPessoal);
