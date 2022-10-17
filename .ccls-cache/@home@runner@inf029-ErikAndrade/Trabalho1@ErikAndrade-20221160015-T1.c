@@ -74,65 +74,209 @@ int teste(int a)
     return val;
 }
 
+// typedef struct DQ
+// {
+//     int iDia; 
+//     int iMes;
+//     int iAno;
+//     int valido; // 0 se inválido, e 1 se válido 
 
+// } DataQuebrada;
 
-DataQuebrada quebraData(char data[]){
-  DataQuebrada dq;
-  char sDia[3];
-	char sMes[3];
-	char sAno[5];
-	int i; 
+//MEU MODELO
 
-	for (i = 0; data[i] != '/'; i++){
-		sDia[i] = data[i];	
-	}
-	if(i == 1 || i == 2){ // testa se tem 1 ou dois digitos
-		sDia[i] = '\0';  // coloca o barra zero no final
-	}else {
-		dq.valido = 0;
-    return dq;
-  }  
-	
-
-	int j = i + 1; //anda 1 cada para pular a barra
-	i = 0;
-
-	for (; data[j] != '/'; j++){
-		sMes[i] = data[j];
-		i++;
-	}
-
-	if(i == 1 || i == 2){ // testa se tem 1 ou dois digitos
-		sMes[i] = '\0';  // coloca o barra zero no final
-	}else {
-		dq.valido = 0;
-    return dq;
-  }
-	
-
-	j = j + 1; //anda 1 cada para pular a barra
-	i = 0;
-	
-	for(; data[j] != '\0'; j++){
-	 	sAno[i] = data[j];
-	 	i++;
-	}
-
-	if(i == 2 || i == 4){ // testa se tem 2 ou 4 digitos
-		sAno[i] = '\0';  // coloca o barra zero no final
-	}else {
-		dq.valido = 0;
-    return dq;
-  }
-
-  dq.iDia = atoi(sDia);
-  dq.iMes = atoi(sMes);
-  dq.iAno = atoi(sAno); 
-
-	dq.valido = 1;
-    
-  return dq;
+int ehbissexto(int ano)
+{
+  if((ano%4==0) && ((ano%400==0) || (ano%100!=0)))
+		return 1; //O ano é bissexto
+	else
+	  return 0; //O ano não é bissexto
 }
+
+int validarData(int dia, int mes, int ano)
+{
+  if(mes<1||mes>12)
+    return 0;
+  
+  if(dia<1)
+    return 0;
+  
+  if(mes==2)
+  {
+    if(ehbissexto(ano)==1)
+    {
+      if(dia>29)
+      return 0;
+    }
+      
+    else if(dia>28)
+      return 0;
+  }
+	
+	else if((mes<=7 && mes%2!=0)||(mes>7 && mes%2==0))
+  {
+    if(dia>31)
+      return 0;
+  }
+	
+	else
+  {
+    if(dia>30)
+      return 0;
+  }
+
+  return 1;
+}
+
+DataQuebrada formatarData(char data[])
+{
+
+  int i, barra, mult;
+  DataQuebrada fdata;
+
+  fdata.valido=1;
+
+  for(i=0; data[i+1]!='\0'; i++);
+
+  for(i, barra=0, mult=1, fdata.iDia=0, fdata.iMes=0, fdata.iAno=0; i>=0; i--)
+  {
+    if(data[i]=='/')
+    {
+      barra++;
+      mult=1;
+      continue;
+    }
+
+    if(data[i]<'0'||data[i]>'9')
+    {
+      fdata.valido=0;
+      return fdata; 
+    }
+    
+    switch(barra)
+    {
+      case 0:
+      {
+        fdata.iAno += (data[i]-'0')*mult;
+        // printf("\nAno=%d", fdata.ano);
+        mult*=10;
+        break;
+      }
+      
+      case 1:
+      {
+        fdata.iMes += (data[i]-'0')*mult;
+        // printf("\nMes=%d", fdata.mes);
+        mult*=10;
+        break;
+      }
+      
+      case 2:
+      {
+        fdata.iDia += (data[i]-'0')*mult;
+        // printf("\nDia=%d", fdata.dia);
+        mult*=10;
+        break;
+      }
+      default:
+      {
+        fdata.valido=0;
+        return fdata;        
+      }
+    }
+  }
+
+  fdata.longData= fdata.iDia+fdata.iMes*100+fdata.iAno*10000;
+
+  if(validarData(fdata.iDia, fdata.iMes, fdata.iAno))
+    return fdata;
+  else
+  {
+    fdata.valido=0;
+    return fdata;   
+  }
+  
+}
+
+//EXEMPLO DA ATIVIDADE
+//====================================================================================
+// DataQuebrada quebraData(char data[])
+// {
+//   DataQuebrada dq;
+//   char sDia[3];
+// 	char sMes[3];
+// 	char sAno[5];
+// 	int i; 
+
+// 	for (i = 0; data[i] != '/'; i++)
+//   {
+// 		sDia[i] = data[i];	
+// 	}
+	
+//   if(i == 1 || i == 2)
+//   { // testa se tem 1 ou dois digitos
+// 		sDia[i] = '\0';  // coloca o barra zero no final
+// 	}
+  
+//   else
+//   {
+// 		dq.valido = 0;
+//     return dq;
+//   }  
+	
+
+// 	int j = i + 1; //anda 1 cada para pular a barra
+// 	i = 0;
+
+// 	for (; data[j] != '/'; j++)
+//   {
+// 		sMes[i] = data[j];
+// 		i++;
+// 	}
+
+// 	if(i == 1 || i == 2)
+//   { // testa se tem 1 ou dois digitos
+// 		sMes[i] = '\0';  // coloca o barra zero no final
+// 	}
+  
+//   else
+//   {
+// 		dq.valido = 0;
+//     return dq;
+//   }
+	
+
+// 	j = j + 1; //anda 1 cada para pular a barra
+// 	i = 0;
+	
+// 	for(; data[j] != '\0'; j++)
+//   {
+// 	 	sAno[i] = data[j];
+// 	 	i++;
+// 	}
+
+// 	if(i == 2 || i == 4)
+//   { // testa se tem 2 ou 4 digitos
+// 		sAno[i] = '\0';  // coloca o barra zero no final
+// 	}
+  
+//   else
+//   {
+// 		dq.valido = 0;
+//     return dq;
+//   }
+
+//   dq.iDia = atoi(sDia);
+//   dq.iMes = atoi(sMes);
+//   dq.iAno = atoi(sAno); 
+
+// 	dq.valido = 1;
+    
+//   return dq;
+// }
+//====================================================================================
+
+
 /*
  Q1 = validar data
 @objetivo
@@ -153,9 +297,13 @@ int q1(char data[])
   //quebrar a string data em strings sDia, sMes, sAno
 
   //DataQuebrada dataQuebrada = quebraData(data);
-  //if (dataQuebrada.valido == 0) return 0;
+  DataQuebrada dataQuebrada = formatarData(data);
 
-  //printf("%s\n", data);
+  if (dataQuebrada.valido == 0)
+    return 0;
+
+  // printf("%s\n", data);
+  //printf("%02d/%02d/%d\t", dataQuebrada.iDia, dataQuebrada.iMes, dataQuebrada.iAno);
 
   if (datavalida)
       return 1;
@@ -185,22 +333,39 @@ DiasMesesAnos q2(char datainicial[], char datafinal[])
     //calcule os dados e armazene nas três variáveis a seguir
     DiasMesesAnos dma;
 
-    if (q1(datainicial) == 0){
+    //DataQuebrada dataQuebrada = quebraData(data);
+    DataQuebrada dataini, datafim;
+    
+    dataini = formatarData(datainicial);
+    datafim = formatarData(datafinal);
+
+    if (q1(datainicial) == 0)
+    {
       dma.retorno = 2;
       return dma;
-    }else if (q1(datafinal) == 0){
+    }
+    
+    else if (q1(datafinal) == 0)
+    {
       dma.retorno = 3;
       return dma;
-    }else{
+    }
+    else
+    {
       //verifique se a data final não é menor que a data inicial
+
+      if(dataini.longData>datafim.longData)
+      {
+        dma.retorno = 3;
+        return dma;
+      }
       
       //calcule a distancia entre as datas
-
+      
 
       //se tudo der certo
       dma.retorno = 1;
       return dma;
-      
     }
     
 }

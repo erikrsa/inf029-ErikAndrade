@@ -22,6 +22,22 @@
 //   int validarSexo(char sexo);
 // }
 
+
+char lerChar(char texto[], int tam)
+{
+  int i;
+  char saida;
+  
+  for(i=0; i<tam && texto[i-1]!='\n'; i++)
+    scanf("%c", &texto[i]);
+
+  if(i>2)
+    return '\0';
+  
+  saida=texto[0];
+  return saida;
+}
+
 int validarNome(char nome[])
 {
   int i;
@@ -56,13 +72,15 @@ dt formatarData(char data[])
   //para converter de segundos para o tempo local  
   //utilizamos a função localtime  
   data_hora_atual = localtime(&segundos);
-  
+
   int i, barra, mult;
   dt fdata;
 
+  fdata.erro=0;
+
   for(i=0; data[i+1]!='\0'; i++);
 
-  for(i, barra=0, mult=1, fdata.dia=0, fdata.mes=0, fdata.ano=0; data[i]!='\0'; i--)
+  for(i, barra=0, mult=1, fdata.dia=0, fdata.mes=0, fdata.ano=0; i>=0; i--)
   {
     if(data[i]=='/')
     {
@@ -70,6 +88,13 @@ dt formatarData(char data[])
       mult=1;
       continue;
     }
+
+    if(data[i]<'0'||data[i]>'9')
+    {
+      fdata.erro=1;
+      return fdata; 
+    }
+    
     switch(barra)
     {
       case 0:
@@ -189,13 +214,28 @@ int validarNascimento(int dia, int mes, int ano)
   return 1;
 }
 
-int validarMatricula(int matricula)
+int validarMatricula(long int matricula)
 {
-  if(matricula>99999)
+  if(matricula>99999||matricula<0)
     return 0;
+  return 1;
 }
 
-long int formatarMatricula(long int matricula)
+long int formatNumMatricula(char Tmatricula[])
+{
+  int i, mult;
+  long int matricula;
+  for(i=0; Tmatricula[i+1]!='\0'; i++);
+  for(i, mult=1, matricula=0; i>=0; mult*=10, i--)
+  {
+    if(Tmatricula[i]<'0'||Tmatricula[i]>'9')
+      return -1;
+    matricula+=(Tmatricula[i]-'0')*mult;
+  }
+  return matricula;
+}
+
+long int formatarMatricula(long int matricula, char tipo)
 {
   int ano,  semestre, matriculaCompleta;
   //ponteiro para struct que armazena data e hora  
@@ -218,23 +258,25 @@ long int formatarMatricula(long int matricula)
   else
     semestre=2;
 
-  matriculaCompleta= ano*1000000 + semestre*100000 + matricula;
+  if(tipo=='a')
+    matriculaCompleta= ano*1000000 + semestre*100000 + matricula;
+  else
+    matriculaCompleta= ((ano%1000)+1)*100000 + matricula;
 
   return matriculaCompleta;
 }
 
-int buscaMatricula(pess pessoal[], int tam, int chave)
+int buscaMatricula(pess pessoal[], int tam, long int chave)
 {
-  for(int i=0; i<tam; i++)
+  int i;
+  for(i=0; i<tam; i++)
   {
     if(pessoal[i].matricula==chave)
       return i;
   }
   return -1;
 }
-//FAZER UM GERA CPF - QUE GERE UM CPF VÁLIDO
 
-//MELHORAR O VALIDA CPF CONSIDERANDO AS REGRAS DE FORMAÇÃO DO DÍGITO VERIFICADOR
 int validarCPF(char cpf[])
 {
   int i, digito1, digito2;
@@ -256,10 +298,10 @@ int validarCPF(char cpf[])
   if(digito1==10)
     digito1=0;
 
-  printf("\n\nDigito 1=%d\n\n", digito1);
+  //printf("\n\nDigito 1=%d\n\n", digito1);
   if(digito1!=(cpf[9]-'0'))
   {
-    printf("\n\nDigito 1 inválido!\n\n");
+    //printf("\n\nDigito 1 inválido!\n\n");
     return 0;
   }
 
@@ -271,10 +313,10 @@ int validarCPF(char cpf[])
   if(digito2==10)
     digito2=0;
 
-  printf("\n\nDigito 2=%d\n\n", digito2);
+  //printf("\n\nDigito 2=%d\n\n", digito2);
   if(digito2!=(cpf[10]-'0'))
   {
-    printf("Digito 2 inválido!\n\n");
+    //printf("Digito 2 inválido!\n\n");
     return 0;
   }
   
@@ -305,6 +347,8 @@ void gerarCPF(char cpf[])
   cpf[10]=(digito2+'0');
   
   cpf[11]='\0';
+
+  //return cpf;
 }
 
 long int formatNumCPF(char cpf[])
@@ -313,14 +357,15 @@ long int formatNumCPF(char cpf[])
   long int numCPF;
   for(i=0; cpf[i+1]!='\0'; i++);
 
-  for(i, mult=1,numCPF=0; i>=0; numCPF+=(cpf[i]-'0')*10, mult*=10, i--);
+  for(i, mult=1, numCPF=0; i>=0; numCPF+=(cpf[i]-'0')*mult, mult*=10, i--);
 
   return numCPF;
 }
 
-int buscaCPF(pess pessoal[], int tam, int chave)
+int buscaCPF(pess pessoal[], int tam, long int chave)
 {
-  for(int i=0; i<tam; i++)
+  int i;
+  for(i=0; i<tam; i++)
   {
     if(pessoal[i].numCPF==chave)
       return i;
@@ -328,6 +373,45 @@ int buscaCPF(pess pessoal[], int tam, int chave)
   return -1;
 }
 
+int comparaNome(char nome1[], char nome2[], int j)
+{
+  for(j; nome1[j]!='\0' && nome1[j]==nome2[j] && nome2[j]!='\0'; j++);
+  if(nome1[j]=='\0' && nome2[j]=='\0')
+    return 1;
+  return 0;
+}
+
+int buscaNome(pess pessoal[], int tam, char chave[])
+{
+  int j;
+  for(int i=0; i<tam; i++)
+  {
+    if(pessoal[i].nome[0]==chave[0])
+    {
+      //comparaNome(pessoal[i].nome, chave, 1);
+      if(comparaNome(pessoal[i].nome, chave, 1))
+        return i;
+    }
+    
+  }
+  return -1;
+}
+
+int buscaDisciplina(disci disciplina[], int tam, char chave[])
+{
+  int j;
+  for(int i=0; i<tam; i++)
+  {
+    if(disciplina[i].nome[0]==chave[0])
+    {
+      //comparaNome(pessoal[i].nome, chave, 1);
+      if(comparaNome(disciplina[i].nome, chave, 1))
+        return i;
+    }
+    
+  }
+  return -1;
+}
 
 int validarSexo(char sexo)
 {
@@ -335,4 +419,26 @@ int validarSexo(char sexo)
     return 1;
   else
     return 0;
+}
+
+int validarNum(char entrada[])
+{
+  int i;
+  for(i=0; entrada[i]!='\0'; i++)
+  {
+    if(entrada[i]<'0' || entrada[i]>'9')
+      return 0;
+  }
+  return 1;
+}
+
+int charint(char entrada[])
+{
+  int num, mult, i;
+
+  for(i=0; entrada[i+1]!='\0'; i++);
+  
+  for(i, mult=1, num=0; i>=0; num+=(entrada[i]-'0')*mult, mult*=10, i--);
+
+  return num;
 }

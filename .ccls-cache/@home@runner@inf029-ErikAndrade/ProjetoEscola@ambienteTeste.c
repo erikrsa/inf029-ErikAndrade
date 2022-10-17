@@ -1,100 +1,236 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
-void gerarCPF(char cpf[]);
-int validarCPF(char cpf[]);
-  
+char lerChar(char texto[], int tam);
+
 int main()
 {
-  char cpf[12];
-  int validacao;
+  int opcao='1';
+  char texto[256];
+  while(opcao!='0')
+  {
+    printf("\n\nOpcao: ");
+    opcao = lerChar(texto, 256);
 
-  gerarCPF(cpf);
-
-  printf("\n\n%s\n", cpf);
-
-  validacao=validarCPF(cpf);
-
-  if(validacao==1)
-    printf("CPF válido!");
-  else
-    printf("CPF inválido!");
-  
+    if(opcao=='\0')
+    {
+      printf("Erro, entrada inválida!\n");
+      continue;
+    }
+    
+    printf("Sua opcao: %c", opcao);
+  }
   return 0;
 }
 
-void gerarCPF(char cpf[])
+char lerChar(char texto[], int tam)
 {
-  int i, digito1, digito2;
-
-  srand(time(NULL));
+  int i;
+  char saida;
   
-  for(i=0, digito1=0, digito2=0; i<9; cpf[i]=('0'+rand()%10), digito1+=(cpf[i]-'0')*(10-i), digito2+=(cpf[i]-'0')*(11-i), i++);
+  for(i=0; i<tam && texto[i-1]!='\n'; i++)
+    scanf("%c", &texto[i]);
+
+  if(i>2)
+    return '\0';
   
-  digito1*=10;
-  digito1%=11;
-  if(digito1==10)
-    digito1=0;
-
-  cpf[9]=(digito1+'0');
-
-  digito2+=(cpf[9]-'0')*(11-i);
-  digito2*=10;
-  digito2%=11;
-  if(digito2==10)
-    digito2=0;
-
-  cpf[10]=(digito2+'0');
-  
-  cpf[11]='\0';
+  saida=texto[0];
+  return saida;
 }
 
-int validarCPF(char cpf[])
+void lerString(char texto[], int tam)
 {
-  int i, digito1, digito2;
-  
-  for(i=0; cpf[i]!='\0'; i++)
-  {
-    if(cpf[i]<'0'||cpf[i]>'9')
-      return 0;
-  }
-  
-  if(i!=11)
-    return 0;
-
-  for(i=8, digito1=0; i>=0; i--)
-    digito1+=(cpf[i]-'0')*(10-i);
-  digito1*=10;
-  digito1%=11;
-
-  if(digito1==10)
-    digito1=0;
-
-  printf("\n\nDigito 1=%d\n\n", digito1);
-  if(digito1!=(cpf[9]-'0'))
-  {
-    printf("\n\nDigito 1 inválido!\n\n");
-    return 0;
-  }
-
-  for(i=9, digito2=0; i>=0; i--)
-    digito2+=(cpf[i]-'0')*(11-i);
-  digito2*=10;
-  digito2%=11;
-
-  if(digito2==10)
-    digito2=0;
-
-  printf("\n\nDigito 2=%d\n\n", digito2);
-  if(digito2!=(cpf[10]-'0'))
-  {
-    printf("Digito 2 inválido!\n\n");
-    return 0;
-  }
-  
-  return 1;
+  int j;
+  fgets(texto, tam, stdin);
+  for(j=0; texto[j]!='\n'; j++);
+  texto[j]='\0';
 }
+//=========================================================================
+
+// typedef struct cadastro_pessoal
+// {
+//   long int matricula;
+//   char nome[256];
+//   //dt data;
+//   int nascDia;
+//   int nascMes;
+//   int nascAno;
+//   char cpf[30];
+//   long int numCPF;
+//   char sexo;
+//   int validaNome;
+//   int validaData;
+//   int validaCPF;
+//   int validaSexo;
+//   int validaMatricula;
+//   char tipo; //'a' para aluno; 'p' para professor
+// }pess;
+
+// int comparaNome(char nome1[], char nome2[]);
+// int buscaNome(pess pessoal[], int tam, char chave[]);
+
+// int main()
+// {
+//   pess pessoal[10];
+//   char chave[256], parou;
+//   int i, j, busca;
+
+//   for(i=0; i<10; i++)
+//   {
+//     printf("ID %d: ", i);
+//     fgets(pessoal[i].nome, 256, stdin);
+//     for(j=0; pessoal[i].nome[j]!='\n'; j++);
+//     pessoal[i].nome[j]='\0';
+//   }
+
+//   for(i=0; i<10; printf("ID %d: %s<-fim", i, pessoal[i].nome), i++);
+
+//   while(parou!='1')
+//   {
+//     printf("\n\nBuscar: ");
+//     fgets(chave, 256, stdin);
+//     for(j=0; chave[j]!='\n'; j++);
+//     chave[j]='\0';
+
+//     printf("\nChave = %s<-fim\n", chave);
+
+//     busca=buscaNome(pessoal, 10, chave);
+
+//     if(busca==-1)
+//     printf("Não encontrado!");
+
+//     else
+//       printf("Encontrado no ID: %d\n", busca);
+    
+    
+//     printf("Digite 1 para encerrar a busca: ");
+//     scanf("%c", &parou);
+//     getchar();
+//   }
+ 
+//   return 0;
+// }
+
+// int buscaNome(pess pessoal[], int tam, char chave[])
+// {
+//   int j;
+//   for(int i=0; i<tam; i++)
+//   {
+//     if(pessoal[i].nome[0]==chave[0])
+//     {
+//       comparaNome(pessoal[i].nome, chave);
+//       if(comparaNome(pessoal[i].nome, chave))
+//         return i;
+//     }
+    
+//   }
+//   return -1;
+// }
+
+// int comparaNome(char nome1[], char nome2[])
+// {
+//   int j;
+//   for(j=1; nome1[j]!='\0' && nome1[j]==nome2[j] && nome2[j]!='\0'; j++);
+//   if(nome2[j]=='\0' && nome2[j]=='\0')
+//     return 1;
+//   return 0;
+// }
+//=============================================================================================
+// void gerarCPF(char cpf[]);
+// int validarCPF(char cpf[]);
+  
+// int main()
+// {
+//   char cpf[12];
+//   int validacao;
+
+//   gerarCPF(cpf);
+
+//   printf("\n\n%s\n", cpf);
+
+//   validacao=validarCPF(cpf);
+
+//   if(validacao==1)
+//     printf("CPF válido!");
+//   else
+//     printf("CPF inválido!");
+  
+//   return 0;
+// }
+
+// void gerarCPF(char cpf[])
+// {
+//   int i, digito1, digito2;
+
+//   srand(time(NULL));
+  
+//   for(i=0, digito1=0, digito2=0; i<9; cpf[i]=('0'+rand()%10), digito1+=(cpf[i]-'0')*(10-i), digito2+=(cpf[i]-'0')*(11-i), i++);
+  
+//   digito1*=10;
+//   digito1%=11;
+//   if(digito1==10)
+//     digito1=0;
+
+//   cpf[9]=(digito1+'0');
+
+//   digito2+=(cpf[9]-'0')*(11-i);
+//   digito2*=10;
+//   digito2%=11;
+//   if(digito2==10)
+//     digito2=0;
+
+//   cpf[10]=(digito2+'0');
+  
+//   cpf[11]='\0';
+// }
+
+// int validarCPF(char cpf[])
+// {
+//   int i, digito1, digito2;
+  
+//   for(i=0; cpf[i]!='\0'; i++)
+//   {
+//     if(cpf[i]<'0'||cpf[i]>'9')
+//       return 0;
+//   }
+  
+//   if(i!=11)
+//     return 0;
+
+//   for(i=8, digito1=0; i>=0; i--)
+//     digito1+=(cpf[i]-'0')*(10-i);
+//   digito1*=10;
+//   digito1%=11;
+
+//   if(digito1==10)
+//     digito1=0;
+
+//   printf("\n\nDigito 1=%d\n\n", digito1);
+//   if(digito1!=(cpf[9]-'0'))
+//   {
+//     printf("\n\nDigito 1 inválido!\n\n");
+//     return 0;
+//   }
+
+//   for(i=9, digito2=0; i>=0; i--)
+//     digito2+=(cpf[i]-'0')*(11-i);
+//   digito2*=10;
+//   digito2%=11;
+
+//   if(digito2==10)
+//     digito2=0;
+
+//   printf("\n\nDigito 2=%d\n\n", digito2);
+//   if(digito2!=(cpf[10]-'0'))
+//   {
+//     printf("Digito 2 inválido!\n\n");
+//     return 0;
+//   }
+  
+//   return 1;
+// }
 //======================================================================================================================================
 // int validarCPF(char cpf[]);
 

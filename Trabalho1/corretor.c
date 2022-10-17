@@ -18,7 +18,7 @@
 #include <string.h>
 
 //renomeie o arquivo do include abaixo para PrimeiroUltimoNomeMATRICULA.h
-#include "PrimeiroUltimoNomeMATRICULA.h"
+#include "ErikAndrade-20221160015-T1.h"
 
 void testSomar();    //função utilizada para testes
 void testFatorial(); //função utilizada para testes
@@ -32,9 +32,9 @@ void testQ6();
 int main()
 {
     //testSomar();
-    //testFatorial();
-    //testQ1();
-    testQ2();
+    // testFatorial();
+    testQ1();
+    //testQ2();
     /*testQ3();
     testQ4();
     testQ5();
@@ -57,6 +57,7 @@ void testFatorial()
 {
     printf("%d\n", fatorial(3) == 6);
     printf("%d\n", fatorial(1) == 1);
+    printf("%d\n", fatorial(0) == 1);
     printf("%d\n", fatorial(5) == 120);
 }
 
@@ -64,7 +65,7 @@ void testQ1()
 {
     char str[11];
     strcpy(str, "29/02/2015");
-    printf("%d\n", q1(str) == 0);
+    printf("%d\n", q1(str)== 0);
     strcpy(str, "29/02/2012");
     printf("%d\n", q1(str) == 1);
     strcpy(str, "9/13/2014");

@@ -1,118 +1,124 @@
 #include <stdio.h>
-#include "pessoal.h"
+#include "disciplinas.h"
 //#include "validarDados.h"
-
-
-//EM excluirDados(), INSERIR:
-//1 ENTRADA DE ID E DELETAR EM FORMATO CHAR --->ok
-//2 FAZER CONTROLE DE ERROS DE ENTRADA --->ok
-//3 CONVERTER FORMATO CHAR EM INT --->ok
-
-//EM atualizarDados():
-//1 FAZER A ENTRADA DO ID EM FORMATO CHAR E DEPOIS CONVERTER (USAR UMA VARIÁVEL AUXILIAR 'entrada') --->ok
-//2 CRIAR A FUNÇÃO CONVERTER CHAR PARA INT --->ok
-
-//EM cadastrarPessoal()
-//Particionar os cadastros em opções para uso mais eficiente em atualizar dados --->ok
-
-//CRIAR FUNÇÃO imprimeCadastro(ID) COM O INTUITO DE MOSTRAR OS DADOS COM O ID EM QUESTÃO --->ok
 
 
 int cadastrarPessoal(pess pessoal[],  int i, int imprimeTitulo, char tipo, pess pessoal2[], int h, char opcao);
 void imprimesexo(char sexo, int pulalin);
 void imprimeCPF(char cpf[], int pulalin);
 void imprimeDados(pess pessoal[], int i);
-void listarPessoal(pess pessoal[], int qtd, char tipo);
-char menuPessoal();
+void listarDisciplinas(disci disciplina[], int qtd);
+char menuDisciplina();
 void atualizarPessoal(pess pessoal[], int i, char tipo, pess pessoal2[], int h);
 int excluirDados(pess alu[], int i, char tipo);
 
 
-int mainPessoal(pess pessoal[], int qtdPessoal, char tipo, pess pessoal2[], int qtdPessoal2)
+//int mainDisciplina(disci disciplina[], int qtdDisciplina, pess pessoal2[], int qtdPessoal2)//verificar as entradas
+int mainDisciplina(disci disciplina[], int qtdDisciplina)
 {
   char opcao='1';
    
   while(opcao!='0')
-  {    
-    if(tipo=='a')
-      printf("\n====> Ambiente do aluno\n\n");
-    else
-      printf("\n====> Ambiente do professor\n\n");
-
-    opcao = menuPessoal(opcao);
+  {
+    opcao = menuDisciplina(opcao);
   
     switch (opcao)
     {
+      /*
+        printf("Digite a opção desejada:\n");
+        printf("0. Voltar\n");
+        printf("1. Listar Disciplinas\n");
+        printf("2. Cadastrar nova disciplina\n");
+        printf("3. Atualizar dados da disciplina\n");
+        printf("4. Inserir/excluir alunos\n\n");
+        printf("5. Inserir/excluir professores\n\n");
+        printf("6. Excluir disciplina\n\n");
+      */
       case '0':
-        //getchar();
-      return qtdPessoal;
+      return qtdDisciplina;
+      
       case '1':
-      //printf("Aqui ficará o módulo listar alunos...\n");
-      listarPessoal(pessoal, qtdPessoal, tipo);
+      printf("Aqui ficará o módulo listar disciplinas...\n");
+      // listarDisciplinas(disciplina, qtdDisciplina);
       break;
+      
       case '2':
-      //printf("Aqui ficará o módulo cadastrar alunos...\n");
-      qtdPessoal=cadastrarPessoal(pessoal, qtdPessoal, 1, tipo, pessoal2, qtdPessoal2, '6');
+      printf("Aqui ficará o módulo cadastrar nova disciplina...\n");
+      // qtdDisciplina=cadastrarDisciplina(pessoal, qtdPessoal, 1, tipo, pessoal2, qtdPessoal2, '6');
       break;
+      
       case '3':
-      //printf("Aqui ficará o módulo atualizar dados...\n");
-      atualizarPessoal(pessoal, qtdPessoal, tipo, pessoal2, qtdPessoal2);
+      printf("Aqui ficará o módulo atualizar dados da disciplina...\n");
+      // atualizarPessoal(pessoal, qtdPessoal, tipo, pessoal2, qtdPessoal2);
       break;
+      
       case '4':
-      //printf("Aqui ficará o módulo de excluir dados...\n");
-      qtdPessoal=excluirDados(pessoal, qtdPessoal, tipo);
+      printf("Inserir/excluir alunos em uma disciplina...\n");
+      //qtdPessoal=excluirDados(pessoal, qtdPessoal, tipo);
       break;
 
+      case '5':
+      printf("Inserir/excluir professores em uma disciplina...\n");
+
+      case '6':
+      printf("Escluir disciplina...\n");
+
       default:
-      printf("Opção inválida!");
+      printf("Opção inválida!\n");
       continue;
     }
   }
   
-  return qtdPessoal;
+  return qtdDisciplina;
 }
 
 
-int cadastrarPessoal(pess pessoal[],  int i, int imprimeTitulo, char tipo, pess pessoal2[], int h, char opcao)
+//int cadastrarDisciplina(disci disciplina[],  int i, int imprimeTitulo, char tipo, pess pessoal2[], int h, char opcao)
+int cadastrarDisciplina(disci disciplina[],  int i, int imprimeTitulo, char opcao)
 {
   int j, existe, outrapessoa;
-  char cpfgera[] = {'g', 'e', 'r', 'a', 'c', 'p', 'f', '\0'}, tentativa, entrada[256];
+  char tentativa, entrada[256];
+  //char cpfgera[] = {'g', 'e', 'r', 'a', 'c', 'p', 'f', '\0'}, tentativa, entrada[256];
 
   if(imprimeTitulo==1)
-  {
-    if(tipo=='a')
-        printf("\n\n=========== CADASTRO DE ALUNOS ===========\n\n");
-    else
-      printf("\n\n========= CADASTRO DE PROFESSORES =========\n\n");
-  }
+    printf("\n\n========= CADASTRO DE DISCIPLINAS =========\n\n");
 
-  
+  //• Cadastro de Disciplinas (Nome, Código, Semestre, Professor)
   //-------------------------------------------------------------------------------------------------
   //CADASTRO DE NOME
   //-------------------------------------------------------------------------------------------------
   if(opcao=='1' || opcao=='6')
   {
-    pessoal[i].validaNome=0;
+    disciplina[i].validaNome=0;
+    existe=0;
   
-    while(pessoal[i].validaNome==0)
+    while(disciplina[i].validaNome==0)
     {
       //INPUT 
       //getchar();
       printf("Nome (no máximo 35 caracteres): ");
-      fgets(pessoal[i].nome, 256, stdin);
-      for(j=0; pessoal[i].nome[j]!='\n'; j++);
-      pessoal[i].nome[j]='\0';
+      fgets(disciplina[i].nome, 256, stdin);
+      for(j=0; disciplina[i].nome[j]!='\n'; j++);
+      disciplina[i].nome[j]='\0';
     
       //VALIDAÇÃO
-      pessoal[i].validaNome = validarNome(pessoal[i].nome);
+      disciplina[i].validaNome = validarNome(disciplina[i].nome);
   
       //TORNAR MAIÚSCULAS AS LETRAS
-      maiuscula(pessoal[i].nome);
+      maiuscula(disciplina[i].nome);
+
+      //VERIFICAR SE A DISCIPLINA JÁ FOI CADASTRADA
+      existe=buscaDisciplina(disciplina, i, disciplina[i].nome);
   
       //ERRO-TRY AGAIN
-      if(pessoal[i].validaNome==0)
+      if(disciplina[i].validaNome==0 && existe!=-1)
       {
-        printf("\nEntrada inválida! Digite 1 para tentar mais uma vez: ");
+        if(disciplina[i].validaNome==0)
+          printf("\nEntrada inválida!");
+        else
+          printf("Disciplina já cadastrada! Verifique a disciplina cadastrada no ID %d", existe);          
+        
+        printf(" Digite 1 para tentar mais uma vez: ");
         tentativa = lerChar(entrada, 256);
         //scanf("%c", &tentativa);
         if(tentativa!='1')
@@ -131,7 +137,7 @@ int cadastrarPessoal(pess pessoal[],  int i, int imprimeTitulo, char tipo, pess 
 
 
   //-------------------------------------------------------------------------------------------------
-  //CADASTRO DE MATRÍCULA
+  //CADASTRO DE CÓDIGO
   //-------------------------------------------------------------------------------------------------
 
   if(opcao=='2' || opcao=='6')
@@ -203,7 +209,7 @@ int cadastrarPessoal(pess pessoal[],  int i, int imprimeTitulo, char tipo, pess 
 
 
   //-------------------------------------------------------------------------------------------------
-  //CADASTRO DATA DE NASCIMENTO
+  //CADASTRO SEMESTRE
   //-------------------------------------------------------------------------------------------------
  
   if(opcao=='3' || opcao=='6')
@@ -717,16 +723,20 @@ int excluirDados(pess pessoal[], int i, char tipo)
   }
 }
 
-char menuPessoal()
+// • Cadastro de Disciplinas (Nome, Código, Semestre, Professor)
+// ◦ Inserir/Excluir aluno de uma disciplina
+char menuDisciplina()
 {
   char entrada[256], opcao;
   
   printf("Digite a opção desejada:\n");
   printf("0. Voltar\n");
-  printf("1. Listar cadastrados\n");
-  printf("2. Novo cadastro\n");
-  printf("3. Atualizar dados\n");
-  printf("4. Excluir dados\n\n");
+  printf("1. Listar Disciplinas\n");
+  printf("2. Cadastrar nova disciplina\n");
+  printf("3. Atualizar dados da disciplina\n");
+  printf("4. Inserir/excluir alunos em uma disciplina\n\n");
+  printf("5. Inserir/excluir professores em uma disciplina\n\n");
+  printf("6. Excluir disciplina\n\n");
 
   printf("Sua opção: ");
 
